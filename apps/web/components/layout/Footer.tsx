@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, Github, ExternalLink } from "lucide-react";
+import { Mail, Github } from "lucide-react";
 
 export function Footer() {
     return (

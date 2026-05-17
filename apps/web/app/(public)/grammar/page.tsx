@@ -35,8 +35,9 @@ export default function GrammarPage() {
             const response = await apiClient.get("/grammar/topics");
             setTopics(response.data.data || []);
             setError("");
-        } catch (err: any) {
-            console.error("Error fetching topics:", err);
+        } catch (error: unknown) {
+            console.error("Error fetching topics:", error);
+            const err = error as { response?: { data?: { message?: string } } };
             setError(err.response?.data?.message || "Failed to load grammar topics");
         } finally {
             setLoading(false);
@@ -96,8 +97,8 @@ export default function GrammarPage() {
                                     key={cat}
                                     onClick={() => setCategory(cat)}
                                     className={`px-3 py-1 rounded-full text-sm transition-all ${category === cat
-                                            ? "bg-primary text-white"
-                                            : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
+                                        ? "bg-primary text-white"
+                                        : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
                                         }`}
                                 >
                                     {cat}
@@ -117,8 +118,8 @@ export default function GrammarPage() {
                                     key={lv}
                                     onClick={() => setLevel(lv)}
                                     className={`px-3 py-1 rounded-full text-sm transition-all ${level === lv
-                                            ? "bg-primary text-white"
-                                            : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
+                                        ? "bg-primary text-white"
+                                        : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
                                         }`}
                                 >
                                     {lv}
@@ -132,13 +133,6 @@ export default function GrammarPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredTopics.length > 0 ? (
                         filteredTopics.map(topic => {
-                            let contentData = [];
-                            try {
-                                contentData = JSON.parse(topic.content);
-                            } catch (e) {
-                                console.error("Error parsing content:", e);
-                            }
-
                             return (
                                 <div
                                     key={topic.id}

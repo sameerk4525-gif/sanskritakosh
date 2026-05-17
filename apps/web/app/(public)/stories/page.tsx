@@ -33,8 +33,9 @@ export default function StoriesPage() {
             const response = await apiClient.get("/stories");
             setStories(response.data.data || []);
             setError("");
-        } catch (err: any) {
-            console.error("Error fetching stories:", err);
+        } catch (error: unknown) {
+            console.error("Error fetching stories:", error);
+            const err = error as { response?: { data?: { message?: string } } };
             setError(err.response?.data?.message || "Failed to load stories");
         } finally {
             setLoading(false);
@@ -78,8 +79,8 @@ export default function StoriesPage() {
                             key={level}
                             onClick={() => setDifficulty(level)}
                             className={`px-4 py-2 rounded-full transition-all ${difficulty === level
-                                    ? "bg-primary text-white shadow-lg"
-                                    : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
+                                ? "bg-primary text-white shadow-lg"
+                                : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
                                 }`}
                         >
                             {level}

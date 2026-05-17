@@ -33,8 +33,9 @@ export default function SubhashitPage() {
             const response = await apiClient.get("/subhashit");
             setSubhashits(response.data.data || []);
             setError("");
-        } catch (err: any) {
-            console.error("Error fetching subhashits:", err);
+        } catch (error: unknown) {
+            console.error("Error fetching subhashits:", error);
+            const err = error as { response?: { data?: { message?: string } } };
             setError(err.response?.data?.message || "Failed to load subhashits");
         } finally {
             setLoading(false);
@@ -85,8 +86,8 @@ export default function SubhashitPage() {
                             key={cat}
                             onClick={() => setCategory(cat)}
                             className={`px-4 py-2 rounded-full transition-all font-medium ${category === cat
-                                    ? "bg-primary text-white shadow-lg"
-                                    : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
+                                ? "bg-primary text-white shadow-lg"
+                                : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
                                 }`}
                         >
                             {cat}

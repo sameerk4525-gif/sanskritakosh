@@ -1,13 +1,13 @@
 /**
  * Simple debounce utility for search functionality
  */
-export function debounce<T extends (...args: any[]) => any>(
-    func: T,
+export function debounce<T extends unknown[], R>(
+    func: (...args: T) => R,
     wait: number
-): (...args: Parameters<T>) => void {
+): (...args: T) => void {
     let timeout: NodeJS.Timeout;
 
-    return function executedFunction(...args: Parameters<T>) {
+    return function executedFunction(...args: T) {
         const later = () => {
             clearTimeout(timeout);
             func(...args);

@@ -34,8 +34,9 @@ export default function SongsPage() {
             const response = await apiClient.get("/songs");
             setSongs(response.data.data || []);
             setError("");
-        } catch (err: any) {
-            console.error("Error fetching songs:", err);
+        } catch (error: unknown) {
+            console.error("Error fetching songs:", error);
+            const err = error as { response?: { data?: { message?: string } } };
             setError(err.response?.data?.message || "Failed to load songs");
         } finally {
             setLoading(false);
@@ -79,8 +80,8 @@ export default function SongsPage() {
                             key={cat}
                             onClick={() => setCategory(cat)}
                             className={`px-4 py-2 rounded-full transition-all ${category === cat
-                                    ? "bg-primary text-white shadow-lg"
-                                    : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
+                                ? "bg-primary text-white shadow-lg"
+                                : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
                                 }`}
                         >
                             {cat}

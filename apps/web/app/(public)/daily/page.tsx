@@ -34,8 +34,9 @@ export default function DailyPage() {
                 setDailyContent(response.data.data);
             }
             setError("");
-        } catch (err: any) {
-            console.error("Error fetching today's content:", err);
+        } catch (error: unknown) {
+            console.error("Error fetching today's content:", error);
+            const err = error as { response?: { data?: { message?: string } } };
             setError(err.response?.data?.message || "Failed to load today's content");
         }
     };
@@ -46,8 +47,8 @@ export default function DailyPage() {
             const response = await apiClient.get("/daily/history/30");
             setHistory(response.data.data || []);
             setError("");
-        } catch (err: any) {
-            console.error("Error fetching history:", err);
+        } catch (error: unknown) {
+            console.error("Error fetching history:", error);
         } finally {
             setLoading(false);
         }
@@ -164,8 +165,8 @@ export default function DailyPage() {
                                 key={type}
                                 onClick={() => setSelectedType(type)}
                                 className={`px-4 py-2 rounded-full transition-all text-sm font-medium ${selectedType === type
-                                        ? "bg-primary text-white shadow-lg"
-                                        : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
+                                    ? "bg-primary text-white shadow-lg"
+                                    : "bg-bg-card text-text-primary border border-primary/20 hover:border-primary/50"
                                     }`}
                             >
                                 {type}

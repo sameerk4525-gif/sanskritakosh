@@ -43,8 +43,9 @@ export default function DictionaryPage() {
                 const response = await apiClient.get(`/dictionary/search?q=${encodeURIComponent(searchQuery)}`);
                 setResults(response.data.data || []);
                 setTotalResults(response.data.data?.length || 0);
-            } catch (err: any) {
-                console.error("Error searching words:", err);
+            } catch (error: unknown) {
+                console.error("Error searching words:", error);
+                const err = error as { response?: { data?: { message?: string } } };
                 setError(err.response?.data?.message || "Search failed");
                 setResults([]);
             } finally {
@@ -64,16 +65,6 @@ export default function DictionaryPage() {
             audio.play();
         }
     };
-
-    let examplesData: string[] = [];
-    const currentExample = results[0]?.examples;
-    if (currentExample) {
-        try {
-            examplesData = JSON.parse(currentExample);
-        } catch (e) {
-            console.error("Error parsing examples:", e);
-        }
-    }
 
     return (
         <div className="min-h-screen bg-bg py-12 px-4">

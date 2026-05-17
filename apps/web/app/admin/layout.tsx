@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, BookOpen, Music, Bookmark, Scroll, BookMarked, Users, Mail, LogOut } from "lucide-react";
+import { LayoutDashboard, BookOpen, Music, Scroll, BookMarked, Users, Mail, LogOut } from "lucide-react";
 import React from "react";
 
 interface AdminLayoutProps {
