@@ -1,0 +1,28 @@
+{
+    "name": "sanskritakosh",
+    "version": "0.1.0",
+    "description": "SanskritKosh - A complete Sanskrit learning platform",
+    "private": true,
+    "workspaces": [
+        "apps/web",
+        "apps/api",
+        "packages/shared"
+    ],
+    "scripts": {
+        "dev": "npm run dev --workspaces --if-present",
+        "build": "npm run build --workspaces",
+        "start": "npm run start --workspaces",
+        "test": "npm run test --workspaces",
+        "lint": "npm run lint --workspaces",
+        "seed": "npm run seed --workspace=apps/api",
+        "db:migrate": "npm run migrate --workspace=apps/api",
+        "install-all": "npm install"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.19",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "@typescript-eslint/parser": "^6.0.0",
+        "eslint": "^8.0.0",
+        "typescript": "^5.0.0"
+    }
+}

@@ -1,0 +1,224 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User Model
+model User {
+  id                String      @id @default(cuid())
+  email             String      @unique
+  passwordHash      String
+  firstName         String?
+  lastName          String?
+  profileImage      String?
+  bio               String?
+  role              String      @default("USER")
+  level             String      @default("BEGINNER")
+  isActive          Boolean     @default(true)
+  
+  // Learning stats
+  currentStreak     Int         @default(0)
+  longestStreak     Int         @default(0)
+  totalPointsEarned Int         @default(0)
+  lastActiveDate    DateTime?
+  
+  // Relations
+  bookmarks         Bookmark[]
+  progress          Progress[]
+  contactMessages   ContactMessage[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Grammar Model
+model GrammarTopic {
+  id                String      @id @default(cuid())
+  slug              String      @unique
+  title             String
+  titleSanskriti    String
+  description       String
+  category          String      // PHONETICS, NOUNS, VERBS, ADJECTIVES, etc.
+  level             String      // BEGINNER, INTERMEDIATE, ADVANCED
+  isFeatured        Boolean     @default(false)
+  isPublished       Boolean     @default(true)
+  
+  // Content (stored as JSON string for SQLite)
+  content           String      @default("[]")  // Array of sections with examples
+  examples          String?     // Array of practical examples
+  
+  // Metadata
+  viewCount         Int         @default(0)
+  estimatedTime     Int         // in minutes
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Dictionary Model
+model DictionaryWord {
+  id                String      @id @default(cuid())
+  word              String      @unique
+  devanagariWord    String
+  transliteration   String
+  pronunciation     String?
+  englishMeaning    String
+  partOfSpeech      String?     // NOUN, VERB, ADJECTIVE, etc.
+  gender            String?     // MASCULINE, FEMININE, NEUTER
+  grammaticalForm   String?
+  etymology         String?
+  examples          String?     // Array of usage examples (stored as JSON string)
+  audioUrl          String?
+  isFeatured        Boolean     @default(false)
+  isPublished       Boolean     @default(true)
+  
+  viewCount         Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Subhashit (Classical Verses) Model
+model Subhashit {
+  id                String      @id @default(cuid())
+  slug              String      @unique
+  devanagariText    String // Original Sanskrit
+  englishTranslation String // English translation
+  meaning           String      // Detailed meaning
+
+  category          String      // WISDOM, MOTIVATIONAL, SPIRITUAL, etc.
+  author            String?
+  source            String?     // Which text it comes from
+  isFeatured        Boolean     @default(false)
+  isPublished       Boolean     @default(true)
+  
+  viewCount         Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Songs Model
+model Song {
+  id                String      @id @default(cuid())
+  slug              String      @unique
+  title             String
+  artist            String?
+  lyrics            String      @default("[]")  // Structured lyrics stored as JSON string
+  description       String?
+  audioUrl          String?
+  videoUrl          String?
+  category          String?     // DEVOTIONAL, CLASSICAL, MODERN, etc.
+  difficulty        String      @default("BEGINNER")
+  isPublished       Boolean     @default(true)
+  
+  viewCount         Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Stories/Texts Model
+model Story {
+  id                String      @id @default(cuid())
+  slug              String      @unique
+  title             String
+  devanagariTitle   String?
+  content           String      @default("[]")  // Structured story stored as JSON string
+  englishTranslation String      @default("[]")  // Paragraph by paragraph translation as JSON string
+  category          String?     // MYTHOLOGY, MORAL, HISTORICAL, etc.
+  difficulty        String      @default("BEGINNER")
+  estimatedTime     Int?        // in minutes
+  isPublished       Boolean     @default(true)
+  
+  viewCount         Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Sanskrit Numbers Model
+model SanskritNumber {
+  id                String      @id @default(cuid())
+  number            Int         @unique
+  devanagariNumeral String
+  sanskritName      String
+  transliteration   String
+  englishName       String
+  explanation       String?
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// Daily Content Model
+model DailyContent {
+  id                String      @id @default(cuid())
+  contentType       String      // WORD, SUBHASHIT, GRAMMAR, STORY
+  contentId         String      // Reference to the content
+  contentTitle      String
+  contentText       String
+  isActive          Boolean     @default(true)
+  
+  scheduledDate     DateTime
+  viewCount         Int         @default(0)
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+// User Bookmarks Model
+model Bookmark {
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  contentType       String      // WORD, SUBHASHIT, GRAMMAR, SONG, STORY
+  contentId         String
+  contentTitle      String
+  
+  createdAt         DateTime    @default(now())
+  
+  @@unique([userId, contentType, contentId])
+}
+
+// User Learning Progress
+model Progress {
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  topicId           String      // Can be any content ID
+  topicTitle        String
+  contentType       String      // GRAMMAR, WORD, etc.
+  
+  viewCount         Int         @default(0)
+  isCompleted       Boolean     @default(false)
+  pointsEarned      Int         @default(0)
+  
+  lastAccessedAt    DateTime    @updatedAt
+  completedAt       DateTime?
+}
+
+// Contact Messages Model
+model ContactMessage {
+  id                String      @id @default(cuid())
+  userId            String?
+  user              User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  name              String
+  email             String
+  subject           String
+  message           String
+  status            String      @default("UNREAD") // UNREAD, READ, REPLIED
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}

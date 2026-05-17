@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-primary: #8b4513;
+    --color-primary-light: #d4956a;
+    --color-accent: #c9a84c;
+    --color-accent-light: #f0d98c;
+    --color-bg: #fdf8f0;
+    --color-bg-card: #fffdf7;
+    --color-bg-dark: #2c1810;
+    --color-text-primary: #1a0a00;
+    --color-text-secondary: #5c3d1e;
+    --color-text-muted: #9c7a5a;
+    --color-border: #e8d5b5;
+    --color-success: #2d6a2d;
+    --color-error: #8b1a1a;
+    --shadow-card: 0 2px 12px rgba(139, 69, 19, 0.08);
+    --shadow-hover: 0 8px 24px rgba(139, 69, 19, 0.16);
+    --font-family-sanskrit: "Tiro Devanagari Sanskrit", "Noto Serif Devanagari", serif;
+    --font-family-body: "Crimson Pro", "Georgia", serif;
+    --font-family-ui: "DM Sans", "Nunito", sans-serif;
+}
+
+* {
+    @apply antialiased;
+}
+
+body {
+    @apply bg-bg text-text-primary font-body;
+}
+
+/* Sanskrit text — ALWAYS use this for Devanagari */
+.sanskrit-text {
+    font-family: var(--font-family-sanskrit);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+    color: var(--color-text-primary);
+}
+
+/* Subhashit/shloka — even larger */
+.shloka-text {
+    font-family: var(--font-family-sanskrit);
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    line-height: 2;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+/* English body */
+.body-text {
+    font-family: var(--font-family-body);
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+}
+
+/* UI labels and navigation */
+.ui-text {
+    font-family: var(--font-family-ui);
+    font-weight: 500;
+}
+
+/* Card styling */
+.card {
+    @apply rounded-2xl bg-bg-card p-5 shadow-card border-t-4 border-accent transition-shadow hover:shadow-hover;
+}
+
+/* Button primary */
+.btn-primary {
+    @apply px-6 py-3 rounded-lg bg-primary text-white font-ui font-medium shadow-md hover:shadow-hover transition-all active:scale-95;
+}
+
+/* Divider with Om */
+.divider-om::before,
+.divider-om::after {
+    content: "ॐ";
+    display: inline-block;
+    margin: 0 0.5rem;
+    color: var(--color-accent);
+}
+
+/* Traditional Om symbol decoration */
+.om-symbol {
+    font-family: var(--font-family-sanskrit);
+    font-size: 2rem;
+    color: var(--color-accent);
+    display: inline-block;
+}
+
+/* Responsive text */
+.text-responsive {
+    font-size: clamp(0.875rem, 2vw, 1.125rem);
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Remove default appearance for inputs */
+input,
+textarea,
+select {
+    @apply font-ui;
+}
+
+/* Devanagari text attributes */
+[lang="sa"] {
+    font-family: var(--font-family-sanskrit);
+}
+
+[lang="en"] {
+    font-family: var(--font-family-body);
+}
+
+/* Loading state */
+@keyframes pulse-gentle {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.animate-pulse-gentle {
+    animation: pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

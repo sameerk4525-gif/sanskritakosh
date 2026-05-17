@@ -1,0 +1,243 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Users
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  name          String?
+  passwordHash  String?
+  role          Role        @default(USER)
+  avatarUrl     String?
+  streak        Int         @default(0)
+  lastVisited   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  bookmarks     Bookmark[]
+  progress      Progress[]
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// Grammar Topics
+model GrammarTopic {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  titleSkt    String
+  titleEn     String
+  category    GrammarCategory
+  content     Json
+  level       Level    @default(BEGINNER)
+  order       Int      @default(0)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([slug])
+}
+
+enum GrammarCategory {
+  VARNAMALA
+  SANDHI
+  SAMAS
+  DHATURUPA
+  SHABDARUPA
+  PANINI_SUTRA
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+// Subhashit
+model Subhashit {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  shloka      String
+  source      String?
+  meaningHi   String?
+  meaningEn   String
+  explanation String?
+  category    String?
+  tags        String[]
+  audioUrl    String?
+  isPublished Boolean     @default(false)
+  isFeatured  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  bookmarks   Bookmark[]
+
+  @@index([slug])
+  @@index([isFeatured])
+}
+
+// Songs (Geeta)
+model Song {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  titleSkt    String
+  titleEn     String
+  lyrics      String
+  meaningEn   String
+  meaningHi   String?
+  audioUrl    String?
+  imageUrl    String?
+  category    String?
+  tags        String[]
+  isPublished Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  bookmarks   Bookmark[]
+
+  @@index([slug])
+}
+
+// Stories
+model Story {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  titleSkt    String
+  titleEn     String
+  content     String
+  simplifiedEn String
+  simplifiedHi String?
+  imageUrl    String?
+  level       Level       @default(BEGINNER)
+  tags        String[]
+  isPublished Boolean     @default(false)
+  isFeatured  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  bookmarks   Bookmark[]
+
+  @@index([slug])
+  @@index([level])
+  @@index([isFeatured])
+}
+
+// Dictionary
+model DictionaryWord {
+  id             String   @id @default(cuid())
+  word           String   @unique
+  wordLatin      String?
+  gender         Gender?
+  wordType       WordType
+  meanings       String[]
+  meaningHi      String?
+  etymology      String?
+  usageExample   String?
+  relatedWords   String[]
+  audioUrl       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([word])
+  @@index([wordLatin])
+}
+
+enum Gender {
+  MASCULINE
+  FEMININE
+  NEUTER
+}
+
+enum WordType {
+  NOUN
+  VERB
+  ADJECTIVE
+  ADVERB
+  PARTICLE
+  PRONOUN
+  INDECLINABLE
+}
+
+// Numbers
+model SanskritNumber {
+  id        String @id @default(cuid())
+  numeral   Int    @unique
+  wordSkt   String
+  wordEn    String
+  audioUrl  String?
+}
+
+// Daily Learning
+model DailyContent {
+  id          String            @id @default(cuid())
+  date        DateTime          @unique @db.Date
+  type        DailyContentType
+  contentId   String
+  createdAt   DateTime          @default(now())
+
+  @@index([date])
+}
+
+enum DailyContentType {
+  WORD
+  SUBHASHIT
+  STORY
+  GRAMMAR_TIP
+}
+
+// Bookmarks
+model Bookmark {
+  id          String      @id @default(cuid())
+  userId      String
+  contentType ContentType
+  contentId   String
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subhashit   Subhashit?  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  song        Song?       @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  story       Story?      @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentType, contentId])
+  @@index([userId])
+}
+
+enum ContentType {
+  SUBHASHIT
+  SONG
+  STORY
+  GRAMMAR
+}
+
+// Progress Tracking
+model Progress {
+  id          String      @id @default(cuid())
+  userId      String
+  contentType ContentType
+  contentId   String
+  completedAt DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentType, contentId])
+  @@index([userId])
+}
+
+// Contact Messages
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
