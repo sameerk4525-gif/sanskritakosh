@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { logError } from "../utils/logger.js";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -38,6 +39,7 @@ router.get("/", async (req: Request, res: Response) => {
             },
         });
     } catch (error) {
+        logError("GET /api/v1/dictionary", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch words" },
@@ -72,6 +74,7 @@ router.get("/search", async (req: Request, res: Response) => {
             data: words,
         });
     } catch (error) {
+        logError("GET /api/v1/dictionary/search", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Search failed" },
@@ -99,6 +102,7 @@ router.get("/:word", async (req: Request, res: Response) => {
             data: dictionaryWord,
         });
     } catch (error) {
+        logError("GET /api/v1/dictionary/:word", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch word" },

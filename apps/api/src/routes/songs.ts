@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { logError } from "../utils/logger.js";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -29,6 +30,7 @@ router.get("/", async (req: Request, res: Response) => {
             meta: { page: parseInt(page as string), total, limit: parseInt(limit as string) },
         });
     } catch (error) {
+        logError("GET /api/v1/songs", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch songs" },
@@ -62,6 +64,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
             data: song,
         });
     } catch (error) {
+        logError("GET /api/v1/songs/:slug", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch song" },
@@ -82,6 +85,7 @@ router.get("/trending/popular", async (_req: Request, res: Response) => {
             data: songs,
         });
     } catch (error) {
+        logError("GET /api/v1/songs/trending/popular", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch popular songs" },

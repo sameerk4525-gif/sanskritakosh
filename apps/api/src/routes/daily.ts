@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { logError } from "../utils/logger.js";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -41,6 +42,7 @@ router.get("/", async (_req: Request, res: Response) => {
             data: dailyContent,
         });
     } catch (error) {
+        logError("GET /api/v1/daily", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch daily content" },
@@ -77,6 +79,7 @@ router.get("/type/:type", async (req: Request, res: Response) => {
             meta: { count: dailyContents.length, type },
         });
     } catch (error) {
+        logError("GET /api/v1/daily/type/:type", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch daily content by type" },
@@ -109,6 +112,7 @@ router.get("/history/:days", async (req: Request, res: Response) => {
             meta: { days: numDays, count: history.length },
         });
     } catch (error) {
+        logError("GET /api/v1/daily/history/:days", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch daily content history" },

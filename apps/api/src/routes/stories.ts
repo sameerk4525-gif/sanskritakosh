@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { logError } from "../utils/logger.js";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -30,6 +31,7 @@ router.get("/", async (req: Request, res: Response) => {
             meta: { page: parseInt(page as string), total, limit: parseInt(limit as string) },
         });
     } catch (error) {
+        logError("GET /api/v1/stories", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch stories" },
@@ -63,6 +65,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
             data: story,
         });
     } catch (error) {
+        logError("GET /api/v1/stories/:slug", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch story" },
@@ -83,6 +86,7 @@ router.get("/featured/stories", async (_req: Request, res: Response) => {
             data: stories,
         });
     } catch (error) {
+        logError("GET /api/v1/stories/featured/stories", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch featured stories" },

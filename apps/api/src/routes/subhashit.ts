@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { logError } from "../utils/logger.js";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -29,6 +30,7 @@ router.get("/", async (req: Request, res: Response) => {
             meta: { page: parseInt(page as string), total },
         });
     } catch (error) {
+        logError("GET /api/v1/subhashit", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch subhashits" },
@@ -48,6 +50,7 @@ router.get("/featured", async (_req: Request, res: Response) => {
             data: subhashit,
         });
     } catch (error) {
+        logError("GET /api/v1/subhashit/featured", error);
         res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch featured" },
@@ -75,6 +78,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
             data: subhashit,
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             success: false,
             error: { code: "INTERNAL_ERROR", message: "Failed to fetch subhashit" },
